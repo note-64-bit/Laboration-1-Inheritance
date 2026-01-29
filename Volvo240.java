@@ -26,7 +26,8 @@ public class Volvo240 extends Car {
 
         currentSpeed = Math.max(getCurrentSpeed() - speedFactor() * amount, 0);
     }
-    public void brake(double amount) {
+
+    public void braketest(double amount) {
         decrementSpeed(amount);
     }
 
