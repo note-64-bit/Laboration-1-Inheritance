@@ -32,10 +32,16 @@ public abstract class Car implements Movable {
     }
 
 
-    protected int getNrDoors() {
+    public int getNrDoors() {
         return nrDoors;
     }
+    public double getX(){ //lägg till getters för att kunna testa
+        return x;
+    }
 
+    public double getY(){
+        return y;
+    }
     protected double getEnginePower() {
         return enginePower;
     }
@@ -48,7 +54,7 @@ public abstract class Car implements Movable {
         return color;
     }
 
-    protected void setColor(Color clr) {
+    public void setColor(Color clr) {
         color = clr;
     }
 
@@ -90,22 +96,36 @@ public abstract class Car implements Movable {
     @Override
     public void move() {
         switch (direction) {
-            case Direction.NORTH -> y += currentSpeed;
-            case Direction.SOUTH -> y -= currentSpeed;
-            case Direction.EAST -> x += currentSpeed;
-            case Direction.WEST -> x -= currentSpeed;
-
-
+            case NORTH:
+                y += currentSpeed;
+                break;
+            case SOUTH:
+                y -= currentSpeed;
+                break;
+            case EAST:
+                x += currentSpeed;
+                break;
+            case WEST:
+                x -= currentSpeed;
+                break;
         }
     }
 
     @Override
     public void turnLeft() {
         switch (direction) {
-            case Direction.NORTH -> direction = Direction.WEST;
-            case Direction.EAST -> direction = Direction.SOUTH;
-            case Direction.SOUTH -> direction = Direction.EAST;
-            case Direction.WEST -> direction = Direction.NORTH;
+            case NORTH:
+                direction = Direction.WEST;
+                break;
+            case EAST:
+                direction = Direction.NORTH;
+                break;
+            case SOUTH:
+                direction = Direction.EAST;
+                break;
+            case WEST:
+                direction = Direction.SOUTH;
+                break;
         }
 
     }
@@ -113,10 +133,18 @@ public abstract class Car implements Movable {
     @Override
     public void turnRight() {
         switch (direction) {
-            case Direction.NORTH -> direction = Direction.EAST;
-            case Direction.EAST -> direction = Direction.SOUTH;
-            case Direction.SOUTH -> direction = Direction.WEST;
-            case Direction.WEST -> direction = Direction.NORTH;
+            case NORTH:
+                 direction = Direction.EAST;
+                 break;
+            case EAST:
+                direction = Direction.SOUTH;
+                break;
+            case SOUTH:
+                direction = Direction.WEST;
+                break;
+            case WEST:
+                direction = Direction.NORTH;
+                break;
         }
     }
 }

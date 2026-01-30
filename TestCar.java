@@ -22,12 +22,68 @@ public class TestCar {
         assertEquals(2, saab.getNrDoors());
     }
 
+    // COLOR
+
+    @Test
+    public void testSetColor(){
+        saab.setColor(Color.pink);
+        assertEquals(Color.pink, saab.getColor());
+
+    }
+
     @Test
     public void testColors() {
         assertEquals(Color.red, saab.getColor());
         assertEquals(Color.black, volvo.getColor());
     }
 
+
+    // MOVE:
+    @Test
+    public void testMoveNorth(){
+        saab.startEngine();
+        saab.gas(1);
+        double yBefore = saab.getY();
+        saab.move();
+        double yAfter = saab.getY();
+        assertTrue(yAfter > yBefore);
+    }
+    @Test
+    public void testMoveEast(){
+        saab.startEngine();
+        saab.gas(1);
+        saab.turnRight(); // EAST
+
+        double xBefore = saab.getX();
+        saab.move();
+        double xAfter = saab.getX();
+
+        assertTrue(xAfter > xBefore);
+    }
+
+    @Test
+    public void testMoveWest() {
+        saab.startEngine();
+        saab.gas(1);
+        saab.turnLeft(); // WEST
+        double xBefore = saab.getX();
+        saab.move();
+        double xAfter = saab.getX();
+        assertTrue(xAfter < xBefore);
+    }
+    @Test
+    public void testMoveSouth() {
+        saab.startEngine();
+        saab.gas(1);
+        saab.turnRight();
+        saab.turnRight();
+        double yBefore = saab.getY();
+        saab.move();
+        double yAfter = saab.getY();
+        assertTrue(yAfter < yBefore);
+    }
+
+            //ENGINE
     @Test
     public void testEngine() {
         saab.startEngine();
@@ -37,35 +93,44 @@ public class TestCar {
         assertEquals(0, saab.getCurrentSpeed(), 0.0001);
     }
 
-
+        //GAS
     @Test
     public void testGasLimits() {
         saab.startEngine();
 
-        saab.gas(-2);   // <0 branch
+        saab.gas(-2);   // <0
         double s1 = saab.getCurrentSpeed();
 
-        saab.gas(3);    // >1 branch
+        saab.gas(3);    // >1
         double s2 = saab.getCurrentSpeed();
 
         assertTrue(s2 > s1);
-    }
 
-    @Test
-    public void testBrakeLimits() {
+
         volvo.startEngine();
-        volvo.gas(1);
+        double speedBefore = volvo.getCurrentSpeed();
 
-        volvo.brake(-2); // <0 branch
-        double s1 = volvo.getCurrentSpeed();
+        volvo.gas(0.5);
 
-        volvo.brake(5); // >1 branch
-        double s2 = volvo.getCurrentSpeed();
-
-        assertTrue(s2 <= s1);
+        double speedAfter = volvo.getCurrentSpeed();
+        assertTrue(speedAfter > speedBefore);
     }
 
 
+        //BRAKE
+@   Test
+    public void brake(){
+        volvo.startEngine();
+        volvo.gas(1.0); // ensure speed > 0
+        double speedBefore = volvo.getCurrentSpeed();
+
+        volvo.brake(0.5);
+
+        double speedAfter = volvo.getCurrentSpeed();
+        assertTrue(speedAfter < speedBefore);
+    }
+
+       // SAAB TURBO ON AND OFF
     @Test
     public void testTurbo() {
         saab.startEngine();
@@ -83,95 +148,33 @@ public class TestCar {
         assertTrue(turbo > noTurbo);
     }
 
-
     @Test
-    public void testVolvoBrakeTestMethod() {
-        volvo.startEngine();
-        volvo.gas(1);
-
-        double before = volvo.getCurrentSpeed();
-        volvo.braketest(0.5);
-        double after = volvo.getCurrentSpeed();
-
-        assertTrue(after < before);
-    }
-
-
-    @Test
-    public void testMoveAllDirections() {
+    public void testTurboOff() {
+        saab.setTurboOn();
         saab.startEngine();
         saab.gas(1);
 
-        // NORTH
-        saab.move();
+        double turboSpeed = saab.getCurrentSpeed();
 
-        // EAST
-        saab.turnRight();
-        saab.move();
+        saab.stopEngine();
+        saab.startEngine();
 
-        // SOUTH
-        saab.turnRight();
-        saab.move();
+        saab.setTurboOff();
+        saab.gas(1);
+        double noTurboSpeed = saab.getCurrentSpeed();
 
-        // WEST
-        saab.turnRight();
-        saab.move();
+        assertTrue(turboSpeed > noTurboSpeed);
 
-        // bara att köra alla switch-grenar räcker för coverage
-        assertTrue(true);
     }
 
+    // Negative speed
 
     @Test
-    public void testTurnLeftAll() {
-        saab.turnLeft();
-        saab.turnLeft();
-        saab.turnLeft();
-        saab.turnLeft();
-        assertTrue(true);
-    }
-
-
-    @Test
-    public void testTurnRightAll() {
-        saab.turnRight();
-        saab.turnRight();
-        saab.turnRight();
-        saab.turnRight();
-        assertTrue(true);
-    }
-
-
-    @Test
-    public void testSpeedNeverNegative() {
+    public void testNegativeSpeed() {
         saab.startEngine();
         saab.brake(1);
         saab.brake(1);
         assertEquals(0, saab.getCurrentSpeed(), 0.0001);
-    }
-    @Test
-    public void brake() {
-        Volvo240 volvo1 = new Volvo240();
-        volvo1.startEngine();
-        volvo1.gas(1.0); // ensure speed > 0
-        double speedBefore = volvo1.getCurrentSpeed();
-
-        volvo1.brake(0.5);
-
-        double speedAfter = volvo1.getCurrentSpeed();
-        assertTrue(speedAfter < speedBefore);
-    }
-
-    @Test
-    public void gas() {
-        Volvo240 volvo2 = new Volvo240();
-        volvo2.startEngine();
-        double speedBefore = volvo2.getCurrentSpeed();
-
-        volvo2.gas(0.5);
-
-        double speedAfter = volvo2.getCurrentSpeed();
-        assertTrue(speedAfter > speedBefore);
     }
 }
 
