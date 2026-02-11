@@ -39,6 +39,12 @@ public abstract class Car implements Movable {
         return x;
     }
 
+    public void setX(double x) {
+        this.x = x;
+    }
+    public void setY(double y){
+        this.y = y;
+    }
     public double getY(){
         return y;
     }
@@ -58,11 +64,11 @@ public abstract class Car implements Movable {
         color = clr;
     }
 
-    protected void startEngine() {
+    public void startEngine() {
         currentSpeed = 0.1;
     }
 
-    protected void stopEngine() {
+    public void stopEngine() {
         currentSpeed = 0;
     }
 
