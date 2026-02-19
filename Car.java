@@ -31,6 +31,14 @@ public abstract class Car implements Movable {
         this.direction = Direction.NORTH;
     }
 
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
 
     public int getNrDoors() {
         return nrDoors;
@@ -80,6 +88,12 @@ public abstract class Car implements Movable {
 //Abstract används för att car vet inte hur hastigheten
 // ska minskas bara att den måste minskas.
 
+    public void setPosition(double x, double y){
+        this.x = x;
+        this.y = y;
+    }
+
+
     public void gas(double amount) {
         if (amount < 0) {
             amount = 0;
@@ -90,11 +104,7 @@ public abstract class Car implements Movable {
     }
 
     public void brake(double amount) {
-        if (amount < 0) {
-            amount = 0;
-        } else if (amount > 1) {
-            amount = 1;
-        }
+        amount = Math.max(0, Math.min(1, amount));
         decrementSpeed(amount);
     }
 
@@ -140,8 +150,8 @@ public abstract class Car implements Movable {
     public void turnRight() {
         switch (direction) {
             case NORTH:
-                 direction = Direction.EAST;
-                 break;
+                direction = Direction.EAST;
+                break;
             case EAST:
                 direction = Direction.SOUTH;
                 break;

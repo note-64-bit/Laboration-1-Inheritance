@@ -16,47 +16,42 @@ public class Scania extends Car {
 
     //public speedfactor:
     public void raiseFlak(double angle) {
-        if (currentSpeed == 0) {
-            flakAngle += angle;
-            if (angle > 70) {
-                flakAngle = 70;
-
-            }
-        }
+        if (currentSpeed != 0) return;
+        flakAngle = Math.min(70, flakAngle + angle);
     }
+
 
     public void lowerFlak(double angle) {
-        if (currentSpeed == 0) {
-            flakAngle -= angle;
-            if (angle < 0) {
-                flakAngle = 0;
-            }
-        }
+        if (currentSpeed != 0) return;
+        flakAngle = Math.max(0, flakAngle - angle);
     }
+
 
     @Override
     public void gas(double amount) {
-        if (flakAngle == 0) {
-            super.gas(amount);
+        if (flakAngle != 0) {
+            stopEngine();
+            return;
         }
+        super.gas(amount);
     }
 
 
     @Override
     protected double speedFactor() {
-    return enginePower * 0.01;
+        return enginePower * 0.01;
 
     }
 
 
     @Override
     protected void incrementSpeed(double amount) {
-    currentSpeed = Math.min(getCurrentSpeed() + speedFactor() * amount, enginePower);
+        currentSpeed = Math.min(getCurrentSpeed() + speedFactor() * amount, enginePower);
     }
 
     @Override
     protected void decrementSpeed(double amount) {
-    currentSpeed = Math.max(getCurrentSpeed() - speedFactor() * amount, 0);
+        currentSpeed = Math.max(getCurrentSpeed() - speedFactor() * amount, 0);
     }
 
 }

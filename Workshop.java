@@ -1,26 +1,27 @@
- import java.util.ArrayList;
-import java.util.List;
 
-public class Workshop<T extends Car> { //T en typparameter, en platshållare.
+import java.util.ArrayList;
 
-    private final int capacity;
-    private final List<T> cars = new ArrayList<>();
+public class Workshop<T extends Car> {
 
-    public Workshop(int capacity){
+    private int capacity;
+    private ArrayList<T> cars;
+
+    public Workshop(int capacity) {
         this.capacity = capacity;
+        this.cars = new ArrayList<>();
     }
 
-    public int getCapacity() {return capacity;} //Hur många platser totalt
-    public int getCount() {return cars.size();} //Hur många bilar finns just nu
-
-    public void addCar(T car){
-        if(car == null) return;
-        if(cars.size() >= capacity) return;
-        cars.add(car);
+    public void loadCar(T car) {
+        if (cars.size() < capacity) {
+            cars.add(car);
+        }
     }
-    // Last in first out
-    public T removeCar(){
-        if(cars.isEmpty()) return null;
-        return cars.remove(cars.size() - 1);
+
+    public void unloadCar(T car) {
+        cars.remove(car);
+    }
+
+    public ArrayList<T> getCars() {
+        return cars;
     }
 }

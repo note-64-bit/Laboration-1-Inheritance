@@ -223,9 +223,9 @@ public class TestCar {
     public void testloadCars(){
 
         transport.lowerRamp();
-        transport.loadCars(saab);
+        transport.loadCar(saab);
 
-        Car unloaded = transport.carUnloading();
+        Car unloaded = transport.unloadCar();
         assertEquals(saab, unloaded);
     }
 
@@ -235,14 +235,14 @@ public class TestCar {
 
         transport.lowerRamp();
 
-        transport.loadCars(saab);
-        transport.loadCars(volvo); // ska INTE lastas (maxCars = 1)
+        transport.loadCar(saab);
+        transport.loadCar(volvo); // ska INTE lastas (maxCars = 1)
 
         // Enda bilen som KAN ligga där är saab
-        Car unloaded = transport.carUnloading();
+        Car unloaded = transport.unloadCar();
 
         assertEquals(saab, unloaded);
-        assertNull(transport.carUnloading());
+        assertNull(transport.unloadCar());
     }
 
     @Test
@@ -254,11 +254,11 @@ public class TestCar {
     @Test
     public void testLIFO() {
         transport.lowerRamp();
-        transport.loadCars(saab);
-        transport.loadCars(volvo);
+        transport.loadCar(saab);
+        transport.loadCar(volvo);
 
-        Car first = transport.carUnloading();
-        Car second = transport.carUnloading();
+        Car first = transport.unloadCar();
+        Car second = transport.unloadCar();
 
         assertEquals(volvo, first);
         assertEquals(saab, second);

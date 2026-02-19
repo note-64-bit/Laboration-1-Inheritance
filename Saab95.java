@@ -2,7 +2,7 @@ import java.awt.*;
 
 public class Saab95 extends Car {
 
-    private boolean turboOn;
+    private boolean turboOn = false;
 
     public Saab95() {
         super(2, Color.red, 125, "Saab95");
@@ -21,18 +21,14 @@ public class Saab95 extends Car {
 
     @Override
     protected double speedFactor() {
-        double turbo = 1;
-        if (turboOn) turbo = 1.3;
+        double turbo = turboOn ? 1.3 : 1.0;
         return enginePower * 0.01 * turbo;
     }
 
     @Override
     protected void incrementSpeed(double amount) {
 
-        currentSpeed = Math.min(
-                getCurrentSpeed() + speedFactor() * amount,
-                enginePower
-        );
+        currentSpeed = Math.min(getCurrentSpeed() + speedFactor() * amount, enginePower);
     }
     // Vi räknar ut en ny hastighet och väljer den minsta eftersom det kan aldrig överstiga enginePower.
 
