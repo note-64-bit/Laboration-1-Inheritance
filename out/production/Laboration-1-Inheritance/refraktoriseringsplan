@@ -1,0 +1,13 @@
+Steg 1: Gör volvoWorkshopPoint privat i DrawPanel och skapa getter getWorkshopBounds().
+Steg 2: Flytta workshop-collision-logik från controller till WorkshopZone.
+Steg 3: Skapa CollisionService och flytta wall-bounce dit.
+Steg 4: Skapa getSpriteId() i Car och implementera i subklasser.
+Steg 5: Byt DrawPanel från instanceof till sprite-cache.
+Steg 6: Städa controller: timer → sim.tick() → view.render().
+
+Parallelt:
+Utvecklare A: SpriteProvider + SpriteCache + uppdatera DrawPanel (ta bort instanceof).
+Utvecklare B: CollisionService + flytta wall-bounce logik.
+Utvecklare C: WorkshopZone + flytta workshop-collision/logik.
+Utvecklare D: CarViewPort + wire om CarController att prata med interface och Simulation.
+Alla dessa kan göras i separata brancher och mergas efterhand.

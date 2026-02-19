@@ -1,0 +1,194 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' Abstraktioner (DIP)
+interface Movable {
+  +move()
+  +turnLeft()
+  +turnRight()
+}
+
+interface Turboable {
+  +setTurboOn()
+  +setTurboOff()
+}
+
+interface Flakable {
+  +raiseFlak(angle:double)
+  +lowerFlak(angle:double)
+  +isFlakUp() : boolean
+}
+
+interface SpriteProvider {
+  +getSpriteId() : String
+}
+
+interface CollisionObject {
+  +getX() : double
+  +getY() : double
+  +getWidth() : int
+  +getHeight() : int
+}
+
+' Modell
+abstract class Car {
+  +Direction : enum
+  --
+  #nrDoors : int
+  #enginePower : double
+  #currentSpeed : double
+  #x : double
+  #y : double
+  #direction : Direction
+  #modelName : String
+  --
+  +getX() : double
+  +getY() : double
+  +setPosition(x:double, y:double)
+  +startEngine()
+  +stopEngine()
+  +gas(amount:double)
+  +brake(amount:double)
+  +move()
+  +turnLeft()
+  +turnRight()
+  --
+  #speedFactor() : double
+  #incrementSpeed(amount:double)
+  #decrementSpeed(amount:double)
+}
+
+enum "Car.Direction" as Direction {
+  NORTH
+  EAST
+  SOUTH
+  WEST
+}
+
+Car ..> Direction
+Car ..|> Movable
+Car ..|> CollisionObject
+Car ..|> SpriteProvider
+
+class Volvo240 {
+  +Volvo240()
+  +getSpriteId() : String
+  #speedFactor() : double
+  #incrementSpeed(double)
+  #decrementSpeed(double)
+}
+
+class Saab95 {
+  -turboOn : boolean
+  +Saab95()
+  +setTurboOn()
+  +setTurboOff()
+  +getSpriteId() : String
+  #speedFactor() : double
+}
+
+class Scania {
+  -flakAngle : double
+  +Scania()
+  +raiseFlak(double)
+  +lowerFlak(double)
+  +isFlakUp() : boolean
+  +getSpriteId() : String
+  +gas(double)
+  +move()
+}
+
+Volvo240 --|> Car
+Saab95 --|> Car
+Scania --|> Car
+Saab95 ..|> Turboable
+Scania ..|> Flakable
+
+' Workshop (generics)
+class "Workshop<T extends Car>" as WorkshopT {
+  -capacity : int
+  -cars : List<T>
+  +add(car:T)
+  +remove() : T
+  +getCount() : int
+}
+WorkshopT o-- "0..*" Car
+
+' Simulationslager (SRP)
+class Simulation {
+  -vehicles : List<Car>
+  -world : WorldBounds
+  -collisions : CollisionService
+  +tick()
+  +getVehicles() : List<Car>
+}
+
+class WorldBounds {
+  +width : int
+  +height : int
+}
+
+class CollisionService {
+  +bounceOnWalls(c:Car, bounds:WorldBounds)
+  +intersects(a:CollisionObject, b:CollisionObject) : boolean
+}
+
+class WorkshopZone {
+  -x : int
+  -y : int
+  -w : int
+  -h : int
+  -workshop : WorkshopT
+  +handle(cars:List<Car>)
+}
+WorkshopZone ..|> CollisionObject
+
+
+' MVC (View beroende minimeras)
+interface CarViewPort {
+  +render(vehicles:List<Car>)
+  +getBounds() : WorldBounds
+}
+
+class CarView {
+  -drawPanel : DrawPanel
+  +render(vehicles:List<Car>)
+  +getBounds() : WorldBounds
+}
+CarView ..|> CarViewPort
+CarView o-- DrawPanel
+
+class DrawPanel {
+  -spriteCache : SpriteCache
+  +setVehicles(vehicles:List<Car>)
+  #paintComponent(g:Graphics)
+}
+
+class SpriteCache {
+  -images : Map<String, BufferedImage>
+  +get(id:String) : BufferedImage
+}
+
+class CarController {
+  -timer : Timer
+  -sim : Simulation
+  -view : CarViewPort
+  +gas(amount:int)
+  +brake(amount:int)
+  +turboOn()
+  +turboOff()
+  +raiseFlak(angle:double)
+  +lowerFlak(angle:double)
+  +startAll()
+  +stopAll()
+}
+
+' Dependency direction (DIP)
+CarController --> Simulation
+CarController --> CarViewPort
+Simulation --> CollisionService
+Simulation --> WorldBounds
+Simulation --> WorkshopZone
+DrawPanel --> SpriteCache
+
+@enduml

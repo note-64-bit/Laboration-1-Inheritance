@@ -1,0 +1,173 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+
+interface Movable {
+  +move()
+  +turnLeft()
+  +turnRight()
+}
+
+abstract class Car {
+  +Direction : enum
+  --
+  #nrDoors : int
+  #enginePower : double
+  #currentSpeed : double
+  #color : Color
+  #modelName : String
+  #x : double
+  #y : double
+  #direction : Direction
+  --
+  +Car(nrDoors:int, color:Color, enginePower:double, modelName:String)
+  +getDirection() : Direction
+  +setDirection(direction:Direction)
+  +getNrDoors() : int
+  +getX() : double
+  +getY() : double
+  +setX(x:double)
+  +setY(y:double)
+  +setPosition(x:double, y:double)
+  +startEngine()
+  +stopEngine()
+  +gas(amount:double)
+  +brake(amount:double)
+  +move()
+  +turnLeft()
+  +turnRight()
+  --
+  #speedFactor() : double
+  #incrementSpeed(amount:double)
+  #decrementSpeed(amount:double)
+}
+
+enum "Car.Direction" as Direction {
+  NORTH
+  EAST
+  SOUTH
+  WEST
+}
+
+Car ..> Direction
+Car ..|> Movable
+
+class Volvo240 {
+  +trimFactor : double
+  -loadedInWorkshop : boolean
+  --
+  +Volvo240()
+  +isLoadedInWorkshop() : boolean
+  +setLoadedInWorkshop(loadedInWorkshop:boolean)
+  +move()
+  #speedFactor() : double
+  #incrementSpeed(amount:double)
+  #decrementSpeed(amount:double)
+}
+
+class Saab95 {
+  -turboOn : boolean
+  --
+  +Saab95()
+  +setTurboOn()
+  +setTurboOff()
+  #speedFactor() : double
+  #incrementSpeed(amount:double)
+  #decrementSpeed(amount:double)
+}
+
+class Scania {
+  -flakAngle : double
+  --
+  +Scania()
+  +getflakAngle() : double
+  +raiseFlak(angle:double)
+  +lowerFlak(angle:double)
+  +gas(amount:double)
+  #speedFactor() : double
+  #incrementSpeed(amount:double)
+  #decrementSpeed(amount:double)
+}
+
+Volvo240 --|> Car
+Saab95 --|> Car
+Scania --|> Car
+
+
+class "Workshop<T extends Car>" as WorkshopT {
+  -capacity : int
+  -cars : ArrayList<T>
+  --
+  +Workshop(capacity:int)
+  +loadCar(car:T)
+  +unloadCar(car:T)
+  +getCars() : ArrayList<T>
+}
+
+WorkshopT o-- "0..*" Car : stores (T)
+
+
+class CarView {
+  -X : int
+  -Y : int
+  --
+  -carC : CarController
+  +drawPanel : DrawPanel
+  --
+  +CarView(framename:String, cc:CarController)
+}
+
+class DrawPanel {
+  -cars : ArrayList<Car>
+  -carPoints : ArrayList<Point>
+  -volvoImage : BufferedImage
+  -saabImage : BufferedImage
+  -scaniaImage : BufferedImage
+  -volvoWorkshopImage : BufferedImage
+  +volvoWorkshopPoint : Point
+  --
+  +DrawPanel(x:int, y:int, cars:ArrayList<Car>)
+  +moveit(index:int, x:int, y:int)
+  #paintComponent(g:Graphics)
+}
+
+CarView o-- DrawPanel
+DrawPanel --> "0..*" Car : draws
+DrawPanel ..> Point
+DrawPanel ..> BufferedImage
+DrawPanel ..> Graphics
+
+class CarController {
+  -delay : int
+  -timer : Timer
+  +frame : CarView
+  +cars : ArrayList<Car>
+  -volvoWorkshop : Workshop<Volvo240>
+  --
+  +main(args:String[])
+  -invertDirection(car:Car)
+  -isAtWorkshop(car:Car) : boolean
+  +gas(amount:int)
+  +brake(amount:int)
+  +setTurboOn()
+  +setTurboOff()
+  +raiseFlak(angle:double)
+  +lowerFlak(angle:double)
+  +startAllCars()
+  +stopAllCars()
+}
+
+class "CarController.TimerListener" as TimerListener {
+  +actionPerformed(e:ActionEvent)
+}
+
+CarController o-- "0..*" Car
+CarController o-- CarView
+CarController o-- DrawPanel : uses frame.drawPanel
+CarController o-- "1" WorkshopT : volvoWorkshop
+CarController o-- Timer
+CarController ..> ActionEvent
+CarController ..> TimerListener
+TimerListener ..|> ActionListener
+
+@enduml
