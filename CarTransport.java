@@ -95,6 +95,12 @@ public class CarTransport extends Car {
         double dist = Math.sqrt(dx * dx + dy * dy);
         return dist <= Max_Distance;
     }
+
+    @Override
+    public String getSpriteKey() {
+        return "";
+    }
+
     @Override
     //lite långsammare acceleration för tung transport
     protected double speedFactor(){

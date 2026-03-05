@@ -35,6 +35,9 @@ public abstract class Car implements Movable {
         return direction;
     }
 
+    public abstract String getSpriteKey();
+
+
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
@@ -164,4 +167,3 @@ public abstract class Car implements Movable {
         }
     }
 }
-

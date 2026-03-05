@@ -1,0 +1,151 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' ===== Interfaces =====
+interface Movable {
+  +move()
+  +turnLeft()
+  +turnRight()
+}
+
+' ===== Model =====
+abstract class Car {
+  +Direction : enum
+  --
+  #nrDoors : int
+  #enginePower : double
+  #currentSpeed : double
+  #color : Color
+  #modelName : String
+  #x : double
+  #y : double
+  #direction : Direction
+  --
+  +getX() : double
+  +getY() : double
+  +setX(x:double)
+  +setY(y:double)
+  +setPosition(x:double, y:double)
+  +startEngine()
+  +stopEngine()
+  +gas(amount:double)
+  +brake(amount:double)
+  +move()
+  +turnLeft()
+  +turnRight()
+  --
+  #speedFactor() : double
+  #incrementSpeed(amount:double)
+  #decrementSpeed(amount:double)
+}
+
+enum "Car.Direction" as Direction {
+  NORTH
+  EAST
+  SOUTH
+  WEST
+}
+
+Car ..|> Movable
+Car ..> Direction
+
+class Volvo240
+class Saab95
+class Scania
+class CarTransport
+
+Volvo240 --|> Car
+Saab95 --|> Car
+Scania --|> Car
+CarTransport --|> Car
+
+class "Workshop<T extends Car>" as WorkshopT {
+  -capacity : int
+  -cars : ArrayList<T>
+  +loadCar(car:T)
+  +unloadCar(car:T)
+  +getCars() : ArrayList<T>
+}
+
+class WorldConfig {
+  +CAR_W : int
+  +CAR_H : int
+  +MAX_CARS : int
+  +VOLVO_WORKSHOP_BOUNDS : Rectangle
+}
+
+class CollisionService {
+  +bounceOnWalls(car:Car, w:int, h:int)
+}
+
+class WorkshopZone {
+  -bounds : Rectangle
+  -workshop : Workshop<Volvo240>
+  +handle(cars:List<Car>)
+}
+
+class Simulation {
+  -cars : List<Car>
+  -collision : CollisionService
+  -workshopZone : WorkshopZone
+  +tick(w:int, h:int)
+  +getCars() : List<Car>
+  +addCar(car:Car)
+  +removeCar() : Car
+}
+
+class CarFactory {
+  +createRandomCar() : Car
+}
+
+' ===== View =====
+class CarView {
+  -carC : CarController
+  +drawPanel : DrawPanel
+}
+
+class DrawPanel {
+  -cars : List<Car>
+  +setCars(cars:List<Car>)
+  #paintComponent(g:Graphics)
+}
+
+' ===== Controller =====
+class CarController {
+  -timer : Timer
+  -sim : Simulation
+  -factory : CarFactory
+  -volvoWorkshop : Workshop<Volvo240>
+  +gas(amount:int)
+  +brake(amount:int)
+  +addCar()
+  +removeCar()
+  +startAllCars()
+  +stopAllCars()
+  +setTurboOn()
+  +setTurboOff()
+  +raiseFlak(angle:double)
+  +lowerFlak(angle:double)
+  +getCars() : List<Car>
+}
+
+' ===== Relationships =====
+CarController --> Simulation
+CarController --> CarFactory
+CarController --> WorkshopT : Volvo workshop
+CarController --> CarView : frame
+
+CarView o-- DrawPanel
+DrawPanel --> "0..*" Car : draws
+
+Simulation --> CollisionService
+Simulation --> WorkshopZone
+Simulation o-- "0..*" Car
+
+WorkshopZone --> WorkshopT : workshop
+WorkshopZone ..> WorldConfig : bounds
+
+CarController ..> Saab95 : instanceof (turbo)
+CarController ..> Scania : instanceof (flak)
+
+@enduml

@@ -15,8 +15,12 @@ public class Saab95 extends Car {
 
 
     public void setTurboOff() {
-
         turboOn = false;
+
+        // If speed is above normal max, clamp it
+        if (currentSpeed > enginePower) {
+            currentSpeed = enginePower;
+        }
     }
 
     @Override
@@ -28,9 +32,13 @@ public class Saab95 extends Car {
     @Override
     protected void incrementSpeed(double amount) {
 
-        currentSpeed = Math.min(getCurrentSpeed() + speedFactor() * amount, enginePower);
+        double maxSpeed = turboOn ? enginePower * 1.2 : enginePower;
+
+        currentSpeed = Math.min(
+                getCurrentSpeed() + speedFactor() * amount,
+                maxSpeed
+        );
     }
-    // Vi räknar ut en ny hastighet och väljer den minsta eftersom det kan aldrig överstiga enginePower.
 
     @Override
     protected void decrementSpeed(double amount) {
@@ -40,13 +48,9 @@ public class Saab95 extends Car {
                 0
         );
     }
+
+    @Override
+    public String getSpriteKey() {
+        return "saab95";
+    }
 }
-
-
-
-
-
-
-
-
-

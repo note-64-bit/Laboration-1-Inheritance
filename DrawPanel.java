@@ -1,82 +1,58 @@
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.util.ArrayList;
-
-// This panel represents the animated part of the view with the car images.
+import java.util.List;
 
 public class DrawPanel extends JPanel {
 
+    private List<Car> cars;
 
-    ArrayList<Car> cars;
-    BufferedImage volvoImage;
-    BufferedImage saabImage;
-    BufferedImage scaniaImage;
+    private BufferedImage volvoImage;
+    private BufferedImage saabImage;
+    private BufferedImage scaniaImage;
+    private BufferedImage volvoWorkshopImage;
 
-    // To keep track of a single car's position
-    ArrayList<Point> carPoints = new ArrayList<>();
-    BufferedImage volvoWorkshopImage;
-    Point volvoWorkshopPoint = new Point(0, 465);
-
-    void moveit(int index, int x, int y) {
-
-        while (carPoints.size() <= index) {
-            carPoints.add(new Point());
-        }
-
-        carPoints.get(index).x = x;
-        carPoints.get(index).y = y;
-    }
-
-    // Initializes the panel and reads the images
-    public DrawPanel(int x, int y, ArrayList<Car> cars) {
+    public DrawPanel(int x, int y, List<Car> cars) {
         this.cars = cars;
-        this.setDoubleBuffered(true);
-        this.setPreferredSize(new Dimension(x, y));
-        this.setBackground(Color.green);
-        // Print an error message in case file is not found with a try/catch block
+        setDoubleBuffered(true);
+        setPreferredSize(new Dimension(x, y));
+        setBackground(Color.green);
+
         try {
             volvoImage = ImageIO.read(DrawPanel.class.getResourceAsStream("/pics/Volvo240.jpg"));
-            volvoWorkshopImage = ImageIO.read(DrawPanel.class.getResourceAsStream("/pics/VolvoBrand.jpg"));
-            saabImage  = ImageIO.read(DrawPanel.class.getResourceAsStream("/pics/Saab95.jpg"));
+            saabImage = ImageIO.read(DrawPanel.class.getResourceAsStream("/pics/Saab95.jpg"));
             scaniaImage = ImageIO.read(DrawPanel.class.getResourceAsStream("/pics/Scania.jpg"));
-
-
+            volvoWorkshopImage = ImageIO.read(DrawPanel.class.getResourceAsStream("/pics/VolvoBrand.jpg"));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
     }
 
-    // This method is called each time the panel updates/refreshes/repaints itself
+    public void setCars(List<Car> cars) {
+        this.cars = cars;
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        for (int i = 0; i < cars.size(); i++) {
+        // Rita verkstad
+        Rectangle r = WorldConfig.VOLVO_WORKSHOP_BOUNDS;
+        g.drawImage(volvoWorkshopImage, r.x, r.y, null);
 
-            if (i >= carPoints.size()) continue;
+        // Rita bilar
+        for (Car car : cars) {
+            int x = (int) Math.round(car.getX());
+            int y = (int) Math.round(car.getY());
 
-            Point p = carPoints.get(i);
-            Car car = cars.get(i);
+            BufferedImage img = null;
+            if (car instanceof Volvo240) img = volvoImage;
+            else if (car instanceof Saab95) img = saabImage;
+            else if (car instanceof Scania) img = scaniaImage;
 
-            if (car instanceof Volvo240) {
-                g.drawImage(volvoImage, p.x, p.y, null);
-            }
-            else if (car instanceof Saab95) {
-                g.drawImage(saabImage, p.x, p.y, null);
-            }
-            else if (car instanceof Scania) {
-                g.drawImage(scaniaImage, p.x, p.y, null);
-            }
+            if (img != null) g.drawImage(img, x, y, null);
         }
-
-        g.drawImage(volvoWorkshopImage, volvoWorkshopPoint.x, volvoWorkshopPoint.y, null);
     }
-
-
 }

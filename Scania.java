@@ -39,7 +39,7 @@ public class Scania extends Car {
 
     @Override
     protected double speedFactor() {
-        return enginePower * 0.01;
+        return enginePower * 0.00175;
 
     }
 
@@ -52,6 +52,11 @@ public class Scania extends Car {
     @Override
     protected void decrementSpeed(double amount) {
         currentSpeed = Math.max(getCurrentSpeed() - speedFactor() * amount, 0);
+    }
+
+    @Override
+    public String getSpriteKey() {
+        return "Scania";
     }
 
 }

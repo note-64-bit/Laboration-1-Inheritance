@@ -8,6 +8,25 @@ public class Volvo240 extends Car {
         super(4, Color.black, 100, "Volvo240");
     }
 
+
+    private boolean loadedInWorkshop = false;
+
+    public boolean isLoadedInWorkshop() {
+        return loadedInWorkshop;
+    }
+
+    public void setLoadedInWorkshop(boolean loadedInWorkshop) {
+        this.loadedInWorkshop = loadedInWorkshop;
+    }
+
+    @Override
+    public void move() {
+        if (!loadedInWorkshop) {
+            super.move(); // only move if not loaded
+        }
+    }
+
+
     @Override
     protected double speedFactor(){
 
@@ -25,6 +44,11 @@ public class Volvo240 extends Car {
         currentSpeed = Math.max(getCurrentSpeed() - speedFactor() * amount, 0);
     }
 
+    @Override
+    public String getSpriteKey() {
+        return "volvo240";
+    }
+
+
 }
 // Att det ska aldrig = 0
-
